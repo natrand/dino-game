@@ -7,7 +7,31 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
+//setting fundamentals
 
+float x = 0;
+float y = 0;
+float velocityX = 0;
+float velocityY = 0;
+float accX = 0;
+float accY = 0;
+float gravity = 1;
+
+void update() {
+    if (y < 500)
+    {
+        velocityY += gravity;
+    }
+    else if (y > 500)
+    {
+        y = 500;
+    }
+    velocityX += accX;
+    velocityY += accY;
+
+    x += velocityX;
+    y += velocityY;
+}
 
 int main()
 {
@@ -34,10 +58,31 @@ int main()
             case sf::Event::KeyPressed:
                 if (ev.key.code == sf::Keyboard::Escape) //to exit we have to press esc button
                     window.close();
+                //jumping
+                else if (ev.type == sf::Event::KeyPressed && ev.key.code == sf::Keyboard::Space)
+                {
+                    velocityY = -10;
+                }
                 break;
             }
 
         }
+
+        //moving object left and right
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        {
+            velocityX = -2;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        {
+            velocityX = 2;
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+
+        }
+        update();
+        rectangle.setPosition(x, y);
 
         window.clear(sf::Color::White);
         window.draw(rectangle);
