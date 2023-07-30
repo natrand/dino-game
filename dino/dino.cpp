@@ -1,6 +1,5 @@
-﻿
-#include <iostream>
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -36,15 +35,18 @@ void update() {
 int main()
 {
     //window
-    sf::RenderWindow window(sf::VideoMode(800, 400), "Dino Game");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Dino Game");
     sf::Event ev;
+    window.setFramerateLimit(60);
     //setting up square
     sf::RectangleShape rectangle;
     rectangle.setSize(sf::Vector2f(50, 50));
     rectangle.setFillColor(sf::Color::Red);
     rectangle.setPosition(0, window.getSize().y - rectangle.getSize().y);
+    // rectangle.setPosition(-230, 100);
 
-    //game loop
+
+     //game loop
     while (window.isOpen())
     {
         //events
@@ -67,7 +69,6 @@ int main()
             }
 
         }
-
         //moving object left and right
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
@@ -84,7 +85,8 @@ int main()
         update();
         rectangle.setPosition(x, y);
 
-        window.clear(sf::Color::White);
+
+        window.clear(sf::Color::Black);
         window.draw(rectangle);
         window.display();
     }
