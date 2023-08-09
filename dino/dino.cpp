@@ -38,6 +38,7 @@ int main()
     bool isJumping = false;
     //bool gameStarted = false;
 
+
     //game loop
     while (window.isOpen())
     {
@@ -72,17 +73,19 @@ int main()
 
         }
 
-        float moveAmount = 5.f;
+        float moveAmount = 0.25f;
+        float backgroundSpeed = 5.f;
+
         if (game.isGameStarted())
         {
-            game.velocityX = 2;
-            rectangle.move(moveAmount, 0.f);
+            game.velocityX = moveAmount;
+            rectangle.move(game.velocityX, 0.f);
 
             if (rectangle.getPosition().x + rectangle.getSize().x >= view.getCenter().x + view.getSize().x / 2) {
-                view.move(moveAmount, 0.f); // Move the view to the right
-                floor.move(moveAmount, 0.f);
+                view.move(-moveAmount*backgroundSpeed, 0.f); // Move the view to the right
+                floor.move(-moveAmount*backgroundSpeed, 0.f);
             }
-
+           
         }
         else {
             game.velocityX = 0;
