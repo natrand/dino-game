@@ -8,6 +8,9 @@ class Game
 public:
 	Game();
 	void update(sf::RenderWindow& window);
+	void startGame();
+	bool isGameStarted() const;
+
 	float x;
 	float y;
 	float velocityX;
@@ -15,7 +18,6 @@ public:
 	float accX;
 	float accY;
 	float gravity;
-	
 
+	bool gameStarted;
 };
-
