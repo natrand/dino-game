@@ -5,7 +5,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-#include "Game.h"
+#include "Player.h"
+#include "Obstacles.h"
 
 
 
@@ -33,10 +34,12 @@ int main()
     rectangle.setFillColor(sf::Color::Red);
     rectangle.setPosition(0, window.getSize().y - rectangle.getSize().y);
 
-    Game game;
+    Player player;
+    const int maxObstacles = 5;
+    Obstacles obstacles[maxObstacles];
 
     bool isJumping = false;
-    //bool gameStarted = false;
+    bool gameStarted = false;
 
 
     //game loop
@@ -57,11 +60,13 @@ int main()
                 //jumping
                 else if (ev.key.code == sf::Keyboard::Space && !isJumping)
                 {
-                    game.startGame();
-                    game.update(window);
-                    game.velocityY = -10;
+                    player.jump();
+                    player.update(window);
+                    player.setVelocityY(-15.0f);
+                    player.startGame();
+
                     isJumping = true;
-                    //gameStarted = true;
+                    gameStarted = true;
                 }
                 break;
             case sf::Event::KeyReleased:
@@ -73,31 +78,43 @@ int main()
 
         }
 
+
         float moveAmount = 0.25f;
         float backgroundSpeed = 5.f;
 
-        if (game.isGameStarted())
+
+        player.update(window);
+        player.updatePosition(1.0f / 60.0f);
+
+        if (player.getX() + player.getWidth() >= view.getCenter().x + view.getSize().x / 2)
         {
-            game.velocityX = moveAmount;
-            rectangle.move(game.velocityX, 0.f);
+            float playerVelocityX = player.getVelocityX();
+            view.move(-moveAmount * backgroundSpeed, 0.f);
+            floor.move(-moveAmount * backgroundSpeed, 0.f);
 
-            if (rectangle.getPosition().x + rectangle.getSize().x >= view.getCenter().x + view.getSize().x / 2) {
-                view.move(-moveAmount*backgroundSpeed, 0.f); // Move the view to the right
-                floor.move(-moveAmount*backgroundSpeed, 0.f);
-            }
-           
-        }
-        else {
-            game.velocityX = 0;
         }
 
-        game.update(window);
-        rectangle.setPosition(game.x, game.y);
+        for (int i = 0; i < maxObstacles; i++)
+        {
+            obstacles[i].update(1.0f / 60.0f, player.getVelocityX(), floor);
+        }
+
+        player.update(window);
+
+        rectangle.setPosition(player.getX(), player.getY());
 
         window.setView(view);
         window.clear(sf::Color::Black);
+
         window.draw(rectangle);
         window.draw(floor);
+
+        for (int i = 0; i < maxObstacles; i++)
+        {
+            obstacles[i].draw(window);
+        }
+
+
         window.display();
     }
 
