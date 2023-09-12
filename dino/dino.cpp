@@ -34,16 +34,31 @@ int main()
     rectangle.setFillColor(sf::Color::Red);
     rectangle.setPosition(0, window.getSize().y - rectangle.getSize().y);
 
+   
     Player player;
     const int maxObstacles = 5;
     Obstacles obstacles[maxObstacles];
 
-    bool isJumping = false;
+    //bool isJumping = false;
     bool gameStarted = false;
+    bool gameOver = false;
+    float jumpHeight = 200.0f;  // jump height 
+    float jumpSpeedY = -20.0f;  // Vertical jump speed
+    bool canJump = false;        // Track if the player can jump
+    
 
+    //text
+    /*
+    sf::Text gameOverText; // Create a text object
+    gameOverText.setFont(sf::Font()); // Set the font
+    gameOverText.setCharacterSize(48); // Set the character size
+    gameOverText.setString("Game Over"); // Set the text content
+    gameOverText.setPosition(300, 200); // Set the position
+    gameOverText.setFillColor(sf::Color::Red); // Set the text color
+    */
 
     //game loop
-    while (window.isOpen())
+    while (window.isOpen() && !gameOver)
     {
         //events
         while (window.pollEvent(ev))
@@ -58,26 +73,34 @@ int main()
                     window.close();
 
                 //jumping
-                else if (ev.key.code == sf::Keyboard::Space && !isJumping)
+                else if (ev.key.code == sf::Keyboard::Space && canJump)
                 {
                     player.jump();
                     player.update(window);
-                    player.setVelocityY(-15.0f);
+                    player.setVelocityY(jumpSpeedY);
                     player.startGame();
 
-                    isJumping = true;
+                    //isJumping = true;
                     gameStarted = true;
+                    canJump = true;  // Prevent further jumping until player lands
                 }
                 break;
             case sf::Event::KeyReleased:
                 if (ev.key.code == sf::Keyboard::Space) {
-                    isJumping = false;
+                    canJump = false;  // Allow jumping when the space key is released
+
+                    
                 }
                 break;
             }
 
+
         }
 
+        if (player.getY() >= window.getSize().y - floor.getSize().y - jumpHeight)
+        {
+            canJump = true;  
+        }
 
         float moveAmount = 0.25f;
         float backgroundSpeed = 5.f;
@@ -94,9 +117,20 @@ int main()
 
         }
 
-        for (int i = 0; i < maxObstacles; i++)
+        // Check collision between the rectangle and obstacles
+        if (!gameOver)
         {
-            obstacles[i].update(1.0f / 60.0f, player.getVelocityX(), floor);
+            for (int i = 0; i < maxObstacles; i++)
+            {
+                obstacles[i].update(1.0f / 60.0f, player.getVelocityX(), floor);
+                if (obstacles[i].isActive() && rectangle.getGlobalBounds().intersects(obstacles[i].getShape().getGlobalBounds()))
+                {
+                    std::cout << "COLLISION!" << std::endl;
+                    gameOver = true;
+                    break;
+                }
+               
+            }
         }
 
         player.update(window);
@@ -106,15 +140,19 @@ int main()
         window.setView(view);
         window.clear(sf::Color::Black);
 
-        window.draw(rectangle);
-        window.draw(floor);
+        
 
         for (int i = 0; i < maxObstacles; i++)
         {
             obstacles[i].draw(window);
         }
-
-
+        /*
+        if (gameOver)
+        {
+            window.draw(gameOverText);
+        }*/
+        window.draw(rectangle);
+        window.draw(floor);
         window.display();
     }
 
