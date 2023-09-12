@@ -1,3 +1,7 @@
 *.dll
 \x64
 dino\x64
+dino\dino.vcxproj
+dino\dino.vcxproj.filters
+dino\dino.vcxproj.user
+
