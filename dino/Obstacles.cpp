@@ -1,57 +1,66 @@
 #include "Obstacles.h"
+#include "Player.h"
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
 
 
-Obstacles::Obstacles()
+Obstacles::Obstacles() 
 {
-    // Initialize obstacle properties here
     shape.setSize(sf::Vector2f(30, 30));
     shape.setFillColor(sf::Color::Blue);
-    shape.setPosition(800, 0); // Initial position
-    velocity = sf::Vector2f(-200, 0); // Initial velocity
-    isActive = false;
+    shape.setPosition(800, 0); 
+    velocity = sf::Vector2f(-300, 0); 
+    active = false;
+    velocityX = 0.0f;
     spawnInterval = static_cast<float>(rand() % 2000 + 1000) / 1000.0f;
     timeSinceLastSpawn = 0.0f;
-    
+    obstacleSpacing = 20.0f;    
 }
-
+bool Obstacles::isActive() const
+{
+    return active;
+}
+const sf::RectangleShape& Obstacles::getShape() const
+{
+    return shape;
+}
 void Obstacles::update(float deltaTime, float playerVelocityX, const sf::RectangleShape& floor)
 {
-    if (!isActive)
+    if (!active)
     {
-        timeSinceLastSpawn += deltaTime;
+        timeSinceLastSpawn += deltaTime*obstacleSpacing;
         if (timeSinceLastSpawn > spawnInterval)
         {
-            isActive = true;
-            shape.setPosition(800, floor.getPosition().y - shape.getSize().y);
-            velocityX = -playerVelocityX; // Match player's velocity
-            timeSinceLastSpawn = 0.0f;
-            spawnInterval = static_cast<float>(rand() % 2000 + 1000) / 1000.0f; // Generate a new spawn interval
+                active = true;
+                shape.setPosition(800, floor.getPosition().y - shape.getSize().y);
+                velocityX = -playerVelocityX; 
+                timeSinceLastSpawn = 0.0f;
+                spawnInterval = static_cast<float>(rand() % 2000 + 1000) / 1000.0f;        
         }
     }
 
-    else if (isActive)
+    else if (active)
     {
-        // Update obstacle position based on player velocity and deltaTime
         float newX = shape.getPosition().x + (velocity.x + playerVelocityX) * deltaTime;
         shape.setPosition(newX, shape.getPosition().y);
-        float obstacleSpeed = -playerVelocityX; // Match obstacle speed with player speed
+        float obstacleSpeed = -playerVelocityX;
         shape.move(obstacleSpeed * deltaTime, 0);
-        
 
-        // Deactivate obstacle if it goes off the screen
-        if (shape.getPosition().x + shape.getSize().x < 0)
+        if (shape.getPosition().x + shape.getSize().x < -obstacleSpacing)
         {
-            isActive = false;
+            active = false;
         }
+    }
+    if (player.getRectangle().getGlobalBounds().intersects(shape.getGlobalBounds())) {
+        player.setVelocityX(0); 
+        player.setGameOver(true); 
     }
 }
 
 void Obstacles::draw(sf::RenderWindow& window)
 {
-    if (isActive)
+    if (active)
     {
         window.draw(shape);
     }
