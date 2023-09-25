@@ -1,4 +1,4 @@
-# dino-game
+# Dino Game
 
 Welcome to Dino Game! This is a simple 2D game created using the SFML library, where the player controls a character that can move to the right and jump over obstacles.
 
@@ -20,16 +20,29 @@ To run the game, you must install the SFML library on your system. Follow these 
 
    Make sure to choose the appropriate version for your operating system (Windows, Linux, or macOS). In this game, the latest version 2.6.0 was used.
 
-2. **Running the game:**
+2. **Setting Up the Project:**
 
-   Open the project in your preferred C++ IDE (e.g., Visual Studio, Code::Blocks, etc.).
+   To set up the project and build it smoothly, you can use Microsoft Visual Studio. Here's how to do it:
 
-   Set up the project to link against the SFML libraries. Refer to the documentation of your IDE on how to link external libraries.
+   - Clone this repository to your local machine using Git:
+   
+     ```bash
+     git clone https://github.com/natrand/dino-game.git
+     ```
 
-   Build and run the game from your IDE. The game window should open, and you can start playing by following the gameplay instructions mentioned above.
+   - Open Microsoft Visual Studio.
 
-3. **Clone the Repository:**
+   - To set up properly your project in Microsoft Visual Studio and to configure it to link against the SFML libraries, here's a YouTube [tutorial](https://www.youtube.com/watch?v=4k9ba8PIvKU) to help you, in case you need any guidance.
 
-   Clone this repository to your local machine using Git:
-   ```bash
-   git clone https://github.com/natrand/dino-game.git
+
+3. **Building and Running the Game:**
+
+   - Now that your project is set up, you can build and run the game from within Microsoft Visual Studio.
+
+   - Click on "Build" -> "Build Solution" to compile the game.
+
+   - Once the build is successful, you can run the game by clicking on "Debug" -> "Start Debugging" or pressing F5.
+
+   - The game window should open, and you can start playing by following the gameplay instructions mentioned above.
+
+That's it! You should now be able to run the Dino Game smoothly on Microsoft Visual Studio by following these steps. Enjoy playing!
