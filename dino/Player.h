@@ -1,8 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-
-//game engine
 class Player
 {
 public:
@@ -18,9 +16,12 @@ public:
 	float getY() const;
 	float getWidth() const;
 	bool isGameStarted() const;
-	void startGame(); // Add this function
+	void setGameOver(bool gameOverState);
+	bool isGameOver() const;
+	void startGame(); 
 	sf::RectangleShape& getRectangle();
 	void updatePosition(float deltaTime);
+
 
 private:
 	float x;
@@ -33,4 +34,5 @@ private:
 	bool jumping;
 	sf::RectangleShape rectangle;
 	bool gameStarted;
+	bool gameOver;
 };
