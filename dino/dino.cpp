@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -14,38 +13,36 @@ int main()
 {
 
 
-    //window
     sf::RenderWindow window(sf::VideoMode(800, 600), "Dino Game");
     sf::Event ev;
-    sf::View view(sf::FloatRect(0.f, 0.f, 800.f, 600.f)); //control view within the window
+    sf::View view(sf::FloatRect(0.f, 0.f, 800.f, 600.f));
 
     sf::RectangleShape floor;
-    floor.setSize(sf::Vector2f(window.getSize().x, 40)); // Set the size of the floor
-    floor.setFillColor(sf::Color::Green); // Set the color of the floor
-    floor.setPosition(0, window.getSize().y - floor.getSize().y); // Position the floor at the bottom of the window
+    floor.setSize(sf::Vector2f(window.getSize().x, 40));
+    floor.setFillColor(sf::Color::Green);
+    floor.setPosition(0, window.getSize().y - floor.getSize().y);
 
 
     window.setFramerateLimit(60);
-
-    //setting up square
-
     sf::RectangleShape rectangle;
     rectangle.setSize(sf::Vector2f(50, 50));
     rectangle.setFillColor(sf::Color::Red);
     rectangle.setPosition(0, window.getSize().y - rectangle.getSize().y);
 
-   
+
     Player player;
     const int maxObstacles = 5;
     Obstacles obstacles[maxObstacles];
 
-    //bool isJumping = false;
+
+
+
     bool gameStarted = false;
     bool gameOver = false;
-    float jumpHeight = 200.0f;  // jump height 
-    float jumpSpeedY = -20.0f;  // Vertical jump speed
-    bool canJump = false;        // Track if the player can jump
-    
+    float jumpHeight = 200.0f;
+    float jumpSpeedY = -25.0f;
+    bool canJump = false;
+
 
     //text
     /*
@@ -57,10 +54,8 @@ int main()
     gameOverText.setFillColor(sf::Color::Red); // Set the text color
     */
 
-    //game loop
     while (window.isOpen() && !gameOver)
     {
-        //events
         while (window.pollEvent(ev))
         {
             switch (ev.type)
@@ -69,10 +64,9 @@ int main()
                 window.close();
                 break;
             case sf::Event::KeyPressed:
-                if (ev.key.code == sf::Keyboard::Escape) //to exit we have to press esc button
+                if (ev.key.code == sf::Keyboard::Escape)
                     window.close();
 
-                //jumping
                 else if (ev.key.code == sf::Keyboard::Space && canJump)
                 {
                     player.jump();
@@ -80,26 +74,20 @@ int main()
                     player.setVelocityY(jumpSpeedY);
                     player.startGame();
 
-                    //isJumping = true;
                     gameStarted = true;
-                    canJump = true;  // Prevent further jumping until player lands
+                    canJump = true;
                 }
                 break;
             case sf::Event::KeyReleased:
                 if (ev.key.code == sf::Keyboard::Space) {
-                    canJump = false;  // Allow jumping when the space key is released
-
-                    
+                    canJump = false;
                 }
                 break;
             }
-
-
         }
-
         if (player.getY() >= window.getSize().y - floor.getSize().y - jumpHeight)
         {
-            canJump = true;  
+            canJump = true;
         }
 
         float moveAmount = 0.25f;
@@ -117,22 +105,28 @@ int main()
 
         }
 
-        // Check collision between the rectangle and obstacles
         if (!gameOver)
         {
             for (int i = 0; i < maxObstacles; i++)
             {
-                obstacles[i].update(1.0f / 60.0f, player.getVelocityX(), floor);
-                if (obstacles[i].isActive() && rectangle.getGlobalBounds().intersects(obstacles[i].getShape().getGlobalBounds()))
+                if (!obstacles[i].isActive())
                 {
-                    std::cout << "COLLISION!" << std::endl;
-                    gameOver = true;
-                    break;
+                    obstacles[i].startSpawn(floor);
                 }
-               
-            }
-        }
+                else
+                {
+                    obstacles[i].updatePosition(1.0f / 60.0f);
+                    obstacles[i].checkCollisionWithPlayer(player);
 
+                    if (rectangle.getGlobalBounds().intersects(obstacles[i].getShape().getGlobalBounds()))
+                    {
+                        std::cout << "COLLISION!" << std::endl;
+                        gameOver = true;
+                        break; 
+                    }
+                }
+            } 
+        }
         player.update(window);
 
         rectangle.setPosition(player.getX(), player.getY());
@@ -140,7 +134,7 @@ int main()
         window.setView(view);
         window.clear(sf::Color::Black);
 
-        
+
 
         for (int i = 0; i < maxObstacles; i++)
         {
