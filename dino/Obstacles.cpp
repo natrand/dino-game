@@ -4,7 +4,10 @@
 #include <cstdlib>
 #include <ctime>
 
-Obstacles::Obstacles() : shape(sf::Vector2f(30, 30)), velocity(-300, 0), active(false), velocityX(0.0f), timeSinceLastSpawn(0.0f), spawnInterval(0.0f), obstacleSpacing(20.0f), player()
+
+Obstacles::Obstacles()
+    : shape(sf::Vector2f(30, 30)), velocity(-300, 0), active(false), velocityX(0.0f), timeSinceLastSpawn(0.0f), spawnInterval(0.0f), obstacleSpacing(20.0f), player()
+
 {
     shape.setFillColor(sf::Color::Blue);
     shape.setPosition(800, 0);
