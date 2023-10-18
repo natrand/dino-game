@@ -3,15 +3,31 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 
+sf::Texture obstaclesTexture;
 
 Obstacles::Obstacles()
-    : shape(sf::Vector2f(30, 30)), velocity(-300, 0), active(false), velocityX(0.0f), timeSinceLastSpawn(0.0f), spawnInterval(0.0f), obstacleSpacing(20.0f), player()
+    : shape(sf::Vector2f(30, 50)), velocity(-300, 0), active(false), velocityX(0.0f), timeSinceLastSpawn(0.0f), spawnInterval(0.0f), obstacleSpacing(20.0f), player()
 
 {
-    shape.setFillColor(sf::Color::Blue);
+    if (obstaclesTexture.getSize().x == 0) {
+        if (!obstaclesTexture.loadFromFile("Assets/dino2.png")) {
+            std::cerr << "Error: Image loading failed." << std::endl;
+        }
+    }
+    shape.setTexture(&obstaclesTexture);
     shape.setPosition(800, 0);
     randomizeSpawnInterval();
+
+}
+
+float Obstacles::getX() const {
+    return shape.getPosition().x;
+}
+
+float Obstacles::getWidth() const {
+    return shape.getSize().x;
 }
 
 void Obstacles::randomizeSpawnInterval()
@@ -45,6 +61,21 @@ void Obstacles::updatePosition(float deltaTime)
     float obstacleSpeed = -player.getVelocityX();
     shape.move(obstacleSpeed * deltaTime, 0);
 
+    hitbox.left = shape.getPosition().x;
+    hitbox.top = shape.getPosition().y;
+    hitbox.width = shape.getSize().x;
+    hitbox.height = 20;
+
+    sf::FloatRect playerHitbox = player.getRectangle().getGlobalBounds();
+
+
+    if (playerHitbox.intersects(hitbox)) {
+
+        player.setVelocityX(0);
+        player.setGameOver(true);
+
+    }
+
     if (shape.getPosition().x + shape.getSize().x < -obstacleSpacing)
     {
         active = false;
@@ -59,7 +90,6 @@ void Obstacles::checkCollisionWithPlayer(Player& player)
         player.setGameOver(true);
     }
 }
-
 
 void Obstacles::draw(sf::RenderWindow& window)
 {

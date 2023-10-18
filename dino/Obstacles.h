@@ -13,10 +13,13 @@ public:
     void startSpawn(const sf::RectangleShape& floor);
     void updatePosition(float deltaTime);
     void checkCollisionWithPlayer(Player& player);
+    float getX() const;
+    float getWidth() const;
 
 private:
     sf::RectangleShape shape;
     sf::Vector2f velocity;
+    sf::FloatRect hitbox;
     bool active;
     float velocityX;
     float timeSinceLastSpawn;
