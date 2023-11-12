@@ -4,11 +4,11 @@
 Player::Player() : x(0), y(0), velocityX(0), velocityY(0), accX(0), accY(0), gravity(1), jumping(false), gameOver(false) {}
 
 void Player::update(sf::RenderWindow& window) {
-    if (y < 500) {
+    if (y < 300) {
         velocityY += gravity;
     }
-    else if (y > 500) {
-        y = 500;
+    else if (y > 300) {
+        y = 300;
     }
     velocityX += accX;
     velocityY += accY;

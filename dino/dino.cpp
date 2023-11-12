@@ -9,18 +9,46 @@
 #include "Obstacles.h"
 
 
+void drawSun(sf::RenderWindow& window) {
+    sf::CircleShape sun(30);
+    sun.setFillColor(sf::Color::Yellow);
+    sun.setPosition(500, 50);
+    window.draw(sun);
+  
+}
 
 int main()
 {
 
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Dino Game");
+    sf::RenderWindow window(sf::VideoMode(600, 400), "Dino Game");
     sf::Event ev;
-    sf::View view(sf::FloatRect(0.f, 0.f, 800.f, 600.f));
+    sf::View view(sf::FloatRect(0.f, 0.f, 600, 400));
     sf::RectangleShape floor;
-    floor.setSize(sf::Vector2f(window.getSize().x, 10));
-    floor.setFillColor(sf::Color::Green);
+    sf::Texture floorTexture;
+    if (!floorTexture.loadFromFile("Assets/desert.png")) {
+        std::cerr << "Error: Floor texture loading failed." << std::endl;
+    }
+
+    floor.setTexture(&floorTexture);
+    floor.setTextureRect(sf::IntRect(0, 0, window.getSize().x, floorTexture.getSize().y));
+    floor.setSize(sf::Vector2f(window.getSize().x, 30.0f));
     floor.setPosition(0, window.getSize().y - floor.getSize().y);
+
+    sf::Color topColor(255, 165, 0); 
+    sf::Color bottomColor(255, 69, 0); 
+
+    sf::VertexArray background(sf::Quads, 4);
+    background[0].color = topColor;
+    background[1].color = topColor;
+    background[2].color = bottomColor;
+    background[3].color = bottomColor;
+
+    background[0].position = sf::Vector2f(0, 0);
+    background[1].position = sf::Vector2f(window.getSize().x, 0);
+    background[2].position = sf::Vector2f(window.getSize().x, window.getSize().y);
+    background[3].position = sf::Vector2f(0, window.getSize().y);
+
 
     sf::Texture rectangleTexture;
     if (!rectangleTexture.loadFromFile("Assets/dino.png")) {
@@ -30,9 +58,7 @@ int main()
     sf::RectangleShape rectangle;
     rectangle.setSize(sf::Vector2f(80, 80));
     rectangle.setTexture(&rectangleTexture);
-    //rectangle.setFillColor(sf::Color::Red);
-    rectangle.setPosition(0, window.getSize().y - rectangle.getSize().y);
-
+    rectangle.setPosition(10, window.getSize().y - floor.getSize().y - rectangle.getSize().y);
 
     Player player;
     const int maxObstacles = 5;
@@ -47,16 +73,16 @@ int main()
     bool canJump = false;
 
     sf::Font font;
-    if (!font.loadFromFile("Assets/arial.ttf"))
+    if (!font.loadFromFile("Assets/joystix monospace.otf"))
     {
         std::cerr << "Error: Font loading failed." << std::endl;
     }
 
     sf::Text scoreText;
     scoreText.setFont(font);
-    scoreText.setCharacterSize(24);
+    scoreText.setCharacterSize(32);
     scoreText.setPosition(30, 20);
-    scoreText.setFillColor(sf::Color::White);
+    scoreText.setFillColor(sf::Color::Black);
 
 
     while (window.isOpen() && !gameOver)
@@ -94,6 +120,7 @@ int main()
         {
             canJump = true;
         }
+        float floorHeight = window.getSize().y - floor.getSize().y - jumpHeight;
 
         float moveAmount = 0.25f;
         float backgroundSpeed = 5.f;
@@ -143,16 +170,17 @@ int main()
         rectangle.setPosition(player.getX(), player.getY());
 
         window.setView(view);
-        window.clear(sf::Color::Black);
-
+        window.clear();
+        window.draw(background);
+        window.draw(floor);
         for (int i = 0; i < maxObstacles; i++)
         {
             obstacles[i].draw(window);
         }
+        drawSun(window);
 
         window.draw(scoreText);
         window.draw(rectangle);
-        window.draw(floor);
         window.display();
     }
 
