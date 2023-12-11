@@ -2,6 +2,9 @@
 
 Welcome to Dino Game! This is a simple 2D game created using the SFML library, where the player controls a character that can move to the right and jump over obstacles.
 
+
+![dino_game](https://github.com/natrand/dino-game/assets/121969070/b4e48f39-6051-4683-819b-6460428a7863)
+
 ## Gameplay
 
 In Dino Game, you control a character that can:
